@@ -12,6 +12,7 @@ import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
+import com.google.api.services.youtube.model.Video;
 
 import java.io.IOException;
 import java.net.ContentHandler;
@@ -38,7 +39,7 @@ public class YoutubeConnector {
             query = youtube.search().list("id,snippet");
             query.setKey(KEY);
             query.setType("video");
-            query.setFields("items(id/videoId,snippet/title,snippet/description," +
+            query.setFields("items(id/videoId,snippet/title,snippet/publishedAt," +
                     "snippet/thumbnails/default/url)");
 
         }catch(IOException e){
@@ -55,14 +56,18 @@ public class YoutubeConnector {
             for(SearchResult result:results){
                 VideoItem item = new VideoItem();
                 item.setTitle(result.getSnippet().getTitle());
-                //get the number of review
-                //item.setNumOfView(result.getId());
-                //get the date of publish
-               //item.setPublishDate(result.getSnippet().getPublishedAt());
-                item.setDescription(result.getSnippet().getDescription());
-
                 item.setThumbnailURL(result.getSnippet().getThumbnails().getDefault().getUrl());
                 item.setId(result.getId().getVideoId());
+                //get the date of publish
+                item.setPublishDate(result.getSnippet().getPublishedAt());
+
+                //getViewCount from video Id
+              YouTube.Videos.List listVideosRequest = youtube.videos().list("snippet, statistics").setId(item.getId());
+                listVideosRequest.setKey(KEY);
+                Video video = listVideosRequest.execute().getItems().get(0);
+                item.setViews(video.getStatistics().getViewCount());
+
+
                 items.add(item);
             }
             return items;

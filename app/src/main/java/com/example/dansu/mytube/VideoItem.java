@@ -2,6 +2,7 @@ package com.example.dansu.mytube;
 
 import com.google.api.client.util.DateTime;
 
+import java.math.BigInteger;
 import java.util.Date;
 
 /**
@@ -13,25 +14,26 @@ public class VideoItem {
     private DateTime publishDate;
     private String thumbnailURL;
     private String id;
-    private int numOfView;
 
-    public void setDescription(String description) {
-        this.description = description;
+    private BigInteger views;
+    private boolean favorite;
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
     }
 
-    public String getDescription() {
+    public boolean isFavorite() {
 
-        return description;
+        return favorite;
     }
 
-    private String description;
-
-    public void setNumOfView(int numOfReview) {
-        this.numOfView = numOfReview;
+    public void setViews(BigInteger views) {
+        this.views = views;
     }
 
-    public int getNumOfView() {
-        return numOfView;
+    public BigInteger getViews() {
+
+        return views;
     }
 
 

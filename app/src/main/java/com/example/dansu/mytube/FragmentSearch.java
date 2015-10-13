@@ -42,6 +42,7 @@ public class FragmentSearch extends Fragment {
     private List<VideoItem> searchResults;
     private Search_Favorite search_favorite;
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,16 +114,17 @@ public class FragmentSearch extends Fragment {
                 }
                 ImageView thumbnail = (ImageView) convertView.findViewById(R.id.video_thumbnail);
                 TextView title = (TextView) convertView.findViewById(R.id.video_title);
-                TextView description = (TextView)convertView.findViewById(R.id.video_description);
-                //TextView numOfReview = (TextView) convertView.findViewById(R.id.numberOfView);
-                //TextView pubDate = (TextView) convertView.findViewById(R.id.publishDate);
-                CheckBox checkBox=(CheckBox)convertView.findViewById(R.id.checkbox_favorite);
-                VideoItem searchResult = searchResults.get(position);
+                TextView numOfReview = (TextView) convertView.findViewById(R.id.numberOfView);
+                TextView pubDate = (TextView) convertView.findViewById(R.id.publishDate);
+                final CheckBox checkBox = (CheckBox) convertView.findViewById(R.id.checkbox_favorite);
+                final VideoItem searchResult = searchResults.get(position);
 
                 Picasso.with(getContext()).load(searchResult.getThumbnailURL()).into(thumbnail);
                 title.setText(searchResult.getTitle());
-                description.setText(searchResult.getDescription());
-                //pubDate.setText(searchResult.getPublishDate().toString());
+                numOfReview.setText(searchResult.getViews().toString() + "views     ");
+                pubDate.setText(searchResult.getPublishDate().toString().substring(0, 10));
+
+                //play video when thumbnail is pressed
                 thumbnail.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -134,10 +136,10 @@ public class FragmentSearch extends Fragment {
                 checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-                        Intent intent=new Intent(getContext(),FragmentFavorite.class);
+                        Toast.makeText(getContext(), "Insert the viedo to favorite", Toast.LENGTH_LONG).show();
+                        searchResult.setFavorite(checkBox.isChecked());
+                        //call the method to insert the video
                         
-                        startActivity(intent);
 
 
                     }
@@ -147,7 +149,7 @@ public class FragmentSearch extends Fragment {
             }
         };
 
-         videosFound.setAdapter(adapter);
+        videosFound.setAdapter(adapter);
 
 
     }
@@ -163,7 +165,6 @@ public class FragmentSearch extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         handler = new Handler();
-
 
 
     }
